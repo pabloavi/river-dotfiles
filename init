@@ -1,0 +1,11 @@
+#!/bin/bash
+
+. ~/.config/river/variables
+. ~/.config/river/mappings
+. ~/.config/river/config
+. ~/.config/river/rules
+. ~/.config/river/autostart
+
+. ~/.config/river/layout
+
+/usr/bin/notify-send "River" "River has been (re)started"

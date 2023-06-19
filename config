@@ -1,0 +1,16 @@
+#!/bin/bash
+
+riverctl keyboard-layout es
+riverctl set-repeat 50 250
+
+riverctl input pointer-1739-52545-SYNA7DB5:01_06CB:CD41_Touchpad scroll-method two-finger
+
+riverctl focus-follows-cursor always
+
+riverctl border-color-focused 0x61afef
+riverctl border-color-unfocused 0x252930
+
+# layout
+killall river-luatile
+riverctl spawn river-luatile
+riverctl default-layout luatile

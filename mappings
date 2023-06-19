@@ -1,0 +1,165 @@
+#!/bin/bash
+
+# terminal
+riverctl map normal Super Return spawn st
+
+# app launcher
+riverctl map normal Super d spawn "rofi -show drun"
+# window launcher
+riverctl map normal Super n spawn "rofi -show window"
+
+riverctl map normal Alt 1 spawn firefox
+riverctl map normal Alt 2 spawn "pcmanfm"
+riverctl map normal Alt+Shift 2 spawn "st -e ranger"
+riverctl map normal Alt o spawn "pcmanfm -n $semestre_dir"
+riverctl map normal Alt+Shift o spawn "st -e ranger $semestre_dir"
+riverctl map normal Alt+Shift w "spawn flatpak run io.github.mimbrero.WhatsAppDesktop"
+
+# toggle waybar with alt + p
+riverctl map normal Alt p spawn "killall -q waybar || waybar &"
+
+# close last notification
+riverctl map normal Super+Shift o spawn "dunstctl close"
+
+# river configuration (reload, exit)
+riverctl map normal Super+Shift r spawn ~/.config/river/init
+riverctl map normal Super+Shift q exit
+
+riverctl map normal Super W close
+riverctl map normal Super S toggle-float
+riverctl map normal Super F toggle-fullscreen
+
+riverctl map normal Super Q focus-previous-tags
+
+riverctl map normal Super X spawn "~/.config/river/scripts/border"
+
+riverctl map normal Super P spawn "rofi -show power-menu -modi power-menu:~/.local/bin/rofi-power-menu -theme powermenu"
+riverctl map normal Super V spawn "clipman pick -t rofi"
+
+# Super+J and Super+K to focus the next/previous view in the layout stack
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+
+# Super+Shift+J and Super+Shift+K to swap the focused view with the next/previous
+# view in the layout stack
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+
+riverctl map normal Super L focus-output next
+riverctl map normal Super H focus-output previous
+riverctl map normal Super+Shift L send-to-output next
+riverctl map normal Super+Shift H send-to-output previous
+
+# bump the focused view to the top of the layout stack
+riverctl map normal Super+Shift Return zoom
+
+# Super+Alt+{H,J,K,L} to move views (floating)
+riverctl map normal Super+Shift LEFT move left 100
+riverctl map normal Super+Shift DOWN move down 100
+riverctl map normal Super+Shift UP move up 100
+riverctl map normal Super+Shift RIGHT move right 100
+
+# Super+Alt+Control+{H,J,K,L} to snap views to screen edges
+riverctl map normal Super+Control LEFT snap left
+riverctl map normal Super+Control DOWN snap down
+riverctl map normal Super+Control UP snap up
+riverctl map normal Super+Control RIGHT snap right
+
+# TODO: revisar de aqui a abajo
+
+# Super+Alt+Shift+{H,J,K,L} to resize views
+riverctl map normal Super+Alt+Shift H resize horizontal -100
+riverctl map normal Super+Alt+Shift J resize vertical 100
+riverctl map normal Super+Alt+Shift K resize vertical -100
+riverctl map normal Super+Alt+Shift L resize horizontal 100
+
+# Super + Left Mouse Button to move views
+riverctl map-pointer normal Super BTN_LEFT move-view
+
+# Super + Right Mouse Button to resize views
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+# Super + Middle Mouse Button to toggle float
+riverctl map-pointer normal Super BTN_MIDDLE toggle-float
+
+# tags 1-10 mappings
+. ~/.config/river/tags
+for i in $(seq 1 9); do
+	tags=$((1 << (i - 1)))
+	##
+	riverctl map normal Super $i set-focused-tags $tags
+	riverctl map normal Super+Shift $i set-view-tags $tags
+	riverctl map normal Super+Control $i toggle-focused-tags $tags
+	riverctl map normal Super+Shift+Control $i toggle-view-tags $tags
+done
+# 10th tag
+tags=512
+riverctl map normal Super 0 set-focused-tags $tags
+riverctl map normal Super+Shift 0 set-view-tags $tags
+riverctl map normal Super+Control 0 toggle-focused-tags $tags
+riverctl map normal Super+Shift+Control 0 toggle-view-tags $tags
+
+# Super+{Up,Right,Down,Left} to change layout orientation
+riverctl map normal Super Up send-layout-cmd rivertile "main-location top"
+riverctl map normal Super Right send-layout-cmd rivertile "main-location right"
+riverctl map normal Super Down send-layout-cmd rivertile "main-location bottom"
+riverctl map normal Super Left send-layout-cmd rivertile "main-location left"
+
+# Declare a passthrough mode. This mode has only a single mapping to return to
+# normal mode. This makes it useful for testing a nested wayland compositor
+riverctl declare-mode passthrough
+
+# Super+F11 to enter passthrough mode
+riverctl map normal Super F11 enter-mode passthrough
+
+# Super+F11 to return to normal mode
+riverctl map passthrough Super F11 enter-mode normal
+
+# Various media key mapping examples for both normal and locked mode which do
+# not have a modifier
+for mode in normal locked; do
+	# Eject the optical drive (well if you still have one that is)
+	riverctl map $mode None XF86Eject spawn 'eject -T'
+
+	# Control pulse audio volume with pamixer (https://github.com/cdemoulins/pamixer)
+	riverctl map $mode None XF86AudioRaiseVolume spawn 'pactl set-sink-volume 0 +5%'
+	riverctl map $mode None XF86AudioLowerVolume spawn 'pactl set-sink-volume 0 -5%'
+	riverctl map $mode None XF86AudioMute spawn 'pactl set-sink-mute 0 toggle'
+
+	# Control screen backlight brightness with light (https://github.com/haikarainen/light)
+	riverctl map $mode None XF86MonBrightnessUp spawn 'brightnessctl set +2%'
+	riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 2%-'
+done
+
+# screenshots
+riverctl map normal Super F12 spawn '~/.local/bin/wayshot --stdout > $HOME/Imágenes/$(date +%Y-%m-%d_%H:%M:%S).png'
+riverctl map normal Super+Shift X spawn '~/.local/bin/wayshot -s "$(slurp)" --stdout > /home/$USER/Imágenes/$(date +%Y-%m-%d_%H:%M:%S).png'
+riverctl map normal Super+Shift S spawn '~/.local/bin/wayshot -s "$(slurp)" --stdout > /tmp/screenshot.png && sxiv -b -a "/tmp/screenshot.png"'
+riverctl map normal Super U spawn "~/.local/bin/wayshot --stdout | wl-copy"
+riverctl map normal Super+Shift U spawn '~/.local/bin/wayshot -s "$(slurp)" --stdout | wl-copy'
+
+# color picker
+riverctl map normal Super+Shift C spawn wl-color-picker
+
+# NOTE: we could use a layout wrapper to send commands from terminal
+# function send_cmd() {
+# 	riverctl send-layout-cmd luatile "$1('$2')"
+# }
+
+riverctl map normal Super+Control K send-layout-cmd luatile "main_count_up()"
+riverctl map normal Super+Control J send-layout-cmd luatile "main_count_down()"
+riverctl map normal Super+Control L send-layout-cmd luatile "main_ratio_up()"
+riverctl map normal Super+Control H send-layout-cmd luatile "main_ratio_down()"
+riverctl map normal Super SPACE send-layout-cmd luatile "cycle_layout()"
+riverctl map normal Super+Shift SPACE send-layout-cmd luatile "cycle_layout(true)" # reverse
+riverctl map normal Super+Control S spawn "$HOME/.config/river/scripts/layout_changer"
+
+riverctl map normal Super+Control F send-layout-cmd luatile "flip()"
+# riverctl map normal Super+Control+Shift F send-layout-cmd luatile "flip(true)" # reverse
+
+riverctl map normal Super Up send-layout-cmd luatile "gaps('outer', 'up')"
+riverctl map normal Super Down send-layout-cmd luatile "gaps('outer', 'down')"
+riverctl map normal Super Right send-layout-cmd luatile "gaps('inner', 'up')"
+riverctl map normal Super Left send-layout-cmd luatile "gaps('inner', 'down')"
+
+# riverctl map normal Super+Shift X 'send_cmd main_ratio_up'

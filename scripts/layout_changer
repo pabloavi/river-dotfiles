@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# riverwm layout changer for river-luatile
+riverctl send-layout-cmd luatile "list_layouts()"
+rofi -dmenu -p "Layout: " </tmp/river_layouts | xargs -I {} riverctl send-layout-cmd luatile "switch_layout('{}')"

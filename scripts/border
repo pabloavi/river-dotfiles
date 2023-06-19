@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# toggle border of river and save state to file /tmp/river_border_width
+if [ $1 == "on" ]; then
+	border_width=2
+elif [ $1 == "off" ]; then
+	border_width=0
+else
+	if [ -f /tmp/river_border_width ]; then
+		border_width=$(cat /tmp/river_border_width)
+		if [ $border_width -eq 0 ]; then
+			border_width=2
+		else
+			border_width=0
+		fi
+	else
+		border_width=0
+	fi
+
+fi
+
+# if file exists, read it and set border width to the other value
+# if file does not exist, set border width to 0 and create file
+riverctl border-width $border_width
+echo $border_width >/tmp/river_border_width

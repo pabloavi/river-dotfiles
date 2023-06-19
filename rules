@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# make all views with an app-id that starts with "float" and title "foo" start floating.
+riverctl rule-add float -app-id 'float*' -title 'foo'
+
+# make all views with app-id "bar" and any title use client-side decorations
+# riverctl rule-add csd -app-id "bar"
