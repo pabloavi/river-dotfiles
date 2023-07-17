@@ -2,11 +2,11 @@
 
 xrdb merge ~/.Xresources
 
-killall -q waybar
-waybar &
+# killall -q waybar
+# waybar &
 
-# pgrep -x greenclip >/dev/null || greenclip daemon &
-pgrep -x clipman >/dev/null || exec wl-paste -t text --watch clipman store &
+pgrep -x waybar >/dev/null || waybar &
+pgrep -x wl-paste >/dev/null || exec wl-paste -t text --watch clipman store &
 pgrep -x dunst >/dev/null || dunst &
 pgrep -x auto_backup >/dev/null || ~/scripts/auto_backup &
 pgrep -x wpaperd >/dev/null || ~/.local/bin/wpaperd &

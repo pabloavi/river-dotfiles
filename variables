@@ -1,3 +1,4 @@
 #!/bin/bash
 
-export semestre_dir="'/home/pablo/Documentos/OneDrive/UEx/SEMESTRE 6/'"
+export terminal="alacritty" # only st and alacritty are supported, as "-e" option is used
+export semestre_dir="'/home/pablo/Documentos/OneDrive/UEx/SEMESTRE 7/'"

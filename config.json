@@ -13,12 +13,12 @@
       "INNER_GAPS": 10,
       "OUTER_GAPS": 10,
       "SMART_GAPS": false,
-      "MAIN_COUNT": 2,
+      "MAIN_COUNT": 1,
       "PREFER_HORIZONTAL": true,
       "PREFER_RIGHT": false
     },
     "eDP-1": {
-      "layout": "tabbed",
+      "layout": "rivertile",
       "override": {
         "centered": {
           "MAIN_RATIO": 0.5,
@@ -32,10 +32,31 @@
           "PREFER_RIGHT": false
         },
         "rivertile": {
-          "MAIN_COUNT": 2
+          "MAIN_COUNT": 1,
+          "MAIN_RATIO": 0.6,
+          "LOCATION_VERTICAL": "top",
+          "LOCATION_HORIZONTAL": "left"
         },
         "grid": {
           "PREFER_HORIZONTAL": false
+        }
+      }
+    },
+    "HDMI-A-1": {
+      "layout": "rivertile",
+      "override": {
+        "centered": {
+          "MAIN_RATIO": 0.5,
+          "GAPS": 10,
+          "SMART_GAPS": false,
+          "MAIN_COUNT": 1,
+          "PREFER_HORIZONTAL": false
+        },
+        "rivertile": {
+          "MAIN_COUNT": 1,
+          "MAIN_RATIO": 0.6,
+          "LOCATION_VERTICAL": "top",
+          "LOCATION_HORIZONTAL": "left"
         }
       }
     }

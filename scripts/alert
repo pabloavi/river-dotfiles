@@ -1,0 +1,3 @@
+#!/bin/bash
+
+paplay /usr/share/sounds/gnome/default/alerts/click.ogg

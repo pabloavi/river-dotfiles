@@ -2,14 +2,14 @@
 
 # toggle border of river and save state to file /tmp/river_border_width
 if [ $1 == "on" ]; then
-	border_width=2
+	border_width=1
 elif [ $1 == "off" ]; then
 	border_width=0
 else
 	if [ -f /tmp/river_border_width ]; then
 		border_width=$(cat /tmp/river_border_width)
 		if [ $border_width -eq 0 ]; then
-			border_width=2
+			border_width=1
 		else
 			border_width=0
 		fi

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+toggle_gaps, switch_layout, cycle_layouts, list_layouts, main_count, main_ratio, toggle_prefer_horizontal, toggle_prefer_right, toggle_reverse, gaps, location

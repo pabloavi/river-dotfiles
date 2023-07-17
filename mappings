@@ -1,27 +1,22 @@
 #!/bin/bash
 
-# terminal
-riverctl map normal Super Return spawn st
+riverctl map normal Super Return spawn "$terminal"
 
-# app launcher
 riverctl map normal Super d spawn "rofi -show drun"
-# window launcher
-riverctl map normal Super n spawn "rofi -show window"
+# riverctl map normal Super n spawn "rofi -show window"
 
 riverctl map normal Alt 1 spawn firefox
 riverctl map normal Alt 2 spawn "pcmanfm"
-riverctl map normal Alt+Shift 2 spawn "st -e ranger"
+riverctl map normal Alt+Shift 2 spawn "$terminal -e ranger"
 riverctl map normal Alt o spawn "pcmanfm -n $semestre_dir"
-riverctl map normal Alt+Shift o spawn "st -e ranger $semestre_dir"
-riverctl map normal Alt+Shift w "spawn flatpak run io.github.mimbrero.WhatsAppDesktop"
+riverctl map normal Alt+Shift o spawn "$terminal -e ranger $semestre_dir"
+riverctl map normal Alt+Shift w spawn "flatpak run io.github.mimbrero.WhatsAppDesktop"
+riverctl map normal Super+Shift C spawn wl-color-picker
 
-# toggle waybar with alt + p
 riverctl map normal Alt p spawn "killall -q waybar || waybar &"
 
-# close last notification
 riverctl map normal Super+Shift o spawn "dunstctl close"
 
-# river configuration (reload, exit)
 riverctl map normal Super+Shift r spawn ~/.config/river/init
 riverctl map normal Super+Shift q exit
 
@@ -34,6 +29,7 @@ riverctl map normal Super Q focus-previous-tags
 riverctl map normal Super X spawn "~/.config/river/scripts/border"
 
 riverctl map normal Super P spawn "rofi -show power-menu -modi power-menu:~/.local/bin/rofi-power-menu -theme powermenu"
+riverctl map normal Super N spawn "sh ~/.local/bin/rofi-wifi-menu.sh"
 riverctl map normal Super V spawn "clipman pick -t rofi"
 
 # Super+J and Super+K to focus the next/previous view in the layout stack
@@ -83,36 +79,23 @@ riverctl map-pointer normal Super BTN_RIGHT resize-view
 riverctl map-pointer normal Super BTN_MIDDLE toggle-float
 
 # tags 1-10 mappings
-. ~/.config/river/tags
 for i in $(seq 1 9); do
 	tags=$((1 << (i - 1)))
-	##
+	##this line is to fix bad TS highlighing below
 	riverctl map normal Super $i set-focused-tags $tags
 	riverctl map normal Super+Shift $i set-view-tags $tags
 	riverctl map normal Super+Control $i toggle-focused-tags $tags
 	riverctl map normal Super+Shift+Control $i toggle-view-tags $tags
 done
-# 10th tag
 tags=512
 riverctl map normal Super 0 set-focused-tags $tags
 riverctl map normal Super+Shift 0 set-view-tags $tags
 riverctl map normal Super+Control 0 toggle-focused-tags $tags
 riverctl map normal Super+Shift+Control 0 toggle-view-tags $tags
 
-# Super+{Up,Right,Down,Left} to change layout orientation
-riverctl map normal Super Up send-layout-cmd rivertile "main-location top"
-riverctl map normal Super Right send-layout-cmd rivertile "main-location right"
-riverctl map normal Super Down send-layout-cmd rivertile "main-location bottom"
-riverctl map normal Super Left send-layout-cmd rivertile "main-location left"
-
-# Declare a passthrough mode. This mode has only a single mapping to return to
-# normal mode. This makes it useful for testing a nested wayland compositor
+# Super+F11 to toggle passthrough mode (for nested wayland sessions)
 riverctl declare-mode passthrough
-
-# Super+F11 to enter passthrough mode
 riverctl map normal Super F11 enter-mode passthrough
-
-# Super+F11 to return to normal mode
 riverctl map passthrough Super F11 enter-mode normal
 
 # Various media key mapping examples for both normal and locked mode which do
@@ -121,12 +104,10 @@ for mode in normal locked; do
 	# Eject the optical drive (well if you still have one that is)
 	riverctl map $mode None XF86Eject spawn 'eject -T'
 
-	# Control pulse audio volume with pamixer (https://github.com/cdemoulins/pamixer)
 	riverctl map $mode None XF86AudioRaiseVolume spawn 'pactl set-sink-volume 0 +5%'
 	riverctl map $mode None XF86AudioLowerVolume spawn 'pactl set-sink-volume 0 -5%'
 	riverctl map $mode None XF86AudioMute spawn 'pactl set-sink-mute 0 toggle'
 
-	# Control screen backlight brightness with light (https://github.com/haikarainen/light)
 	riverctl map $mode None XF86MonBrightnessUp spawn 'brightnessctl set +2%'
 	riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 2%-'
 done
@@ -138,13 +119,16 @@ riverctl map normal Super+Shift S spawn '~/.local/bin/wayshot -s "$(slurp)" --st
 riverctl map normal Super U spawn "~/.local/bin/wayshot --stdout | wl-copy"
 riverctl map normal Super+Shift U spawn '~/.local/bin/wayshot -s "$(slurp)" --stdout | wl-copy'
 
-# color picker
-riverctl map normal Super+Shift C spawn wl-color-picker
-
 # NOTE: we could use a layout wrapper to send commands from terminal
 # function send_cmd() {
 # 	riverctl send-layout-cmd luatile "$1('$2')"
 # }
+
+# Super+{Up,Right,Down,Left} to change layout orientation
+riverctl map normal Super Up send-layout-cmd luatile "location('top')"
+riverctl map normal Super Right send-layout-cmd luatile "location('right')"
+riverctl map normal Super Down send-layout-cmd luatile "location('bottom')"
+riverctl map normal Super Left send-layout-cmd luatile "location('left')"
 
 riverctl map normal Super+Control K send-layout-cmd luatile "main_count_up()"
 riverctl map normal Super+Control J send-layout-cmd luatile "main_count_down()"
@@ -153,13 +137,14 @@ riverctl map normal Super+Control H send-layout-cmd luatile "main_ratio_down()"
 riverctl map normal Super SPACE send-layout-cmd luatile "cycle_layout()"
 riverctl map normal Super+Shift SPACE send-layout-cmd luatile "cycle_layout(true)" # reverse
 riverctl map normal Super+Control S spawn "$HOME/.config/river/scripts/layout_changer"
+riverctl map normal Super+Control Return send-layout-cmd luatile "bring_to_front()"
 
 riverctl map normal Super+Control F send-layout-cmd luatile "flip()"
 # riverctl map normal Super+Control+Shift F send-layout-cmd luatile "flip(true)" # reverse
 
-riverctl map normal Super Up send-layout-cmd luatile "gaps('outer', 'up')"
-riverctl map normal Super Down send-layout-cmd luatile "gaps('outer', 'down')"
-riverctl map normal Super Right send-layout-cmd luatile "gaps('inner', 'up')"
-riverctl map normal Super Left send-layout-cmd luatile "gaps('inner', 'down')"
+# riverctl map normal Super Up send-layout-cmd luatile "gaps('outer', 'up')"
+# riverctl map normal Super Down send-layout-cmd luatile "gaps('outer', 'down')"
+# riverctl map normal Super Right send-layout-cmd luatile "gaps('inner', 'up')"
+# riverctl map normal Super Left send-layout-cmd luatile "gaps('inner', 'down')"
 
 # riverctl map normal Super+Shift X 'send_cmd main_ratio_up'

@@ -4,4 +4,6 @@
 riverctl rule-add float -app-id 'float*' -title 'foo'
 
 # make all views with app-id "bar" and any title use client-side decorations
-# riverctl rule-add csd -app-id "bar"
+# riverctl rule-add csd -app-id "st" -title "St"
+
+riverctl rule-add float -app-id 'org.gnome.Calculator'
